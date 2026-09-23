@@ -1,0 +1,11 @@
+.git
+.env
+data
+bitacora
+tests
+qa
+docs
+plantillas
+__pycache__
+.venv
+venv
