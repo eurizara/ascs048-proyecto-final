@@ -52,6 +52,7 @@ uvicorn labreserva.main:app --port 8000
 | La bitácora no se edita | `bitacora/ejecucion.jsonl` se versiona tal como la genera el sistema (ERS, RN-30). |
 | Contrato de pruebas | Pruebas de API con la variable `SUT_URL` (por defecto `http://localhost:8000`); pruebas unitarias importando `labreserva.reglas`; ejecutar con `python -m pytest` desde la raíz. |
 | Consultas | Grupo de Telegram del curso, hasta el 17 de octubre de 2026. Pregunte por el **requisito**, nunca publique defectos, pruebas, código ni resultados (es un trabajo individual). Solo la respuesta del docente es oficial y se publica en `docs/aclaraciones.md`. |
+Para recibir nuevas aclaraciones en su repositorio, consulte `docs/aclaraciones.md` en este repositorio público (se actualiza aquí).
 
 ## 6. Problemas frecuentes
 
@@ -63,5 +64,3 @@ uvicorn labreserva.main:app --port 8000
 | `env file ... .env not found` | Copie `.env.example` como `.env` (paso 2). |
 | El contenedor se detiene y los logs dicen `Carné inválido` | Revise `CARNE=` en `.env` y ejecute de nuevo `docker compose up -d --build`. |
 | `port is already allocated` | Otro programa usa el puerto 8000; ciérrelo (macOS/Linux: `lsof -i :8000`). |
-
-Para recibir nuevas aclaraciones en su repositorio, consulte `docs/aclaraciones.md` en este repositorio público (se actualiza aquí).
