@@ -52,6 +52,7 @@ uvicorn labreserva.main:app --port 8000
 | La bitácora no se edita | `bitacora/ejecucion.jsonl` se versiona tal como la genera el sistema (ERS, RN-30). |
 | Contrato de pruebas | Pruebas de API con la variable `SUT_URL` (por defecto `http://localhost:8000`); pruebas unitarias importando `labreserva.reglas`; ejecutar con `python -m pytest` desde la raíz. |
 | Consultas | Grupo de Telegram del curso, hasta el 17 de octubre de 2026. Pregunte por el **requisito**, nunca publique defectos, pruebas, código ni resultados (es un trabajo individual). Solo la respuesta del docente es oficial y se publica en `docs/aclaraciones.md`. |
+
 Para recibir nuevas aclaraciones en su repositorio, consulte `docs/aclaraciones.md` en este repositorio público (se actualiza aquí).
 
 ## 6. Problemas frecuentes
