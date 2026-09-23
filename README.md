@@ -53,4 +53,15 @@ uvicorn labreserva.main:app --port 8000
 | Contrato de pruebas | Pruebas de API con la variable `SUT_URL` (por defecto `http://localhost:8000`); pruebas unitarias importando `labreserva.reglas`; ejecutar con `python -m pytest` desde la raíz. |
 | Consultas | Grupo de Telegram del curso, hasta el 17 de octubre de 2026. Pregunte por el **requisito**, nunca publique defectos, pruebas, código ni resultados (es un trabajo individual). Solo la respuesta del docente es oficial y se publica en `docs/aclaraciones.md`. |
 
+## 6. Problemas frecuentes
+
+| Síntoma | Solución |
+|---|---|
+| `failed to connect to the docker API` o `Cannot connect to the Docker daemon` | Abra Docker Desktop y espere a que termine de iniciar antes de ejecutar `docker compose`. |
+| macOS: `You have not agreed to the Xcode and Apple SDKs license` | Ejecute `sudo xcodebuild -license accept` e ingrese la contraseña de su Mac (requiere usuario administrador). |
+| No puedo clonar mi repositorio privado (pide usuario y contraseña) | GitHub no acepta la contraseña de la cuenta. Use **GitHub Desktop** (Clone repository), o GitHub CLI: `gh auth login` y luego `gh repo clone <usuario>/<repositorio>`. |
+| `env file ... .env not found` | Copie `.env.example` como `.env` (paso 2). |
+| El contenedor se detiene y los logs dicen `Carné inválido` | Revise `CARNE=` en `.env` y ejecute de nuevo `docker compose up -d --build`. |
+| `port is already allocated` | Otro programa usa el puerto 8000; ciérrelo (macOS/Linux: `lsof -i :8000`). |
+
 Para recibir nuevas aclaraciones en su repositorio, consulte `docs/aclaraciones.md` en este repositorio público (se actualiza aquí).
