@@ -1,0 +1,10 @@
+services:
+  labreserva:
+    build: .
+    container_name: labreserva
+    env_file: .env
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - ./bitacora:/app/bitacora
+      - ./data:/app/data

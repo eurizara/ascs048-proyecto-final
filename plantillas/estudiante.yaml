@@ -1,0 +1,6 @@
+# Copie a qa/estudiante.yaml y complete.
+nombre: "Nombre completo"
+carne: "7690-00-0000"          # exactamente como en Canvas
+huella: "XXXXXXXX"             # la que muestra GET /api/parametros
+herramienta_api: "postman"     # postman | bruno
+ruta_coleccion: "api-collection/postman/labreserva.postman_collection.json"

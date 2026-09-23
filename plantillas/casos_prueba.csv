@@ -1,0 +1,2 @@
+id,reglas,tecnica,descripcion,precondiciones,datos_entrada,resultado_esperado,automatizado_en,resultado_ejecucion
+CP-001,RN-00,VL,"Ejemplo ficticio: valor límite superior","Reloj fijado; semilla restablecida","...","201 y estado PENDIENTE","tests/api/test_reservas.py::test_ejemplo","Pasa"

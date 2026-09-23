@@ -1,0 +1,20 @@
+# Copie a qa/defectos.yaml. Un elemento por defecto. Ejemplo ficticio (bórrelo).
+defectos:
+  - id: DEF-01
+    titulo: "Frase breve que describe la falla observada"
+    reglas: ["RN-00"]                    # regla(s) de la ERS o aclaración (ACL-xx) incumplida(s)
+    severidad: "Alta"                    # Crítica | Alta | Media | Baja
+    prioridad: "P2"                      # P1 | P2 | P3 | P4
+    caracteristica_iso25010: "Adecuación funcional - corrección funcional"
+    precondiciones: "Reloj fijado en ...; datos semilla restablecidos"
+    pasos:
+      - "Paso 1"
+      - "Paso 2"
+    datos: "Valores exactos usados (derivados de SUS parámetros)"
+    resultado_esperado: "Lo que exige la ERS, citando la regla"
+    resultado_obtenido: "Lo que respondió el sistema (código HTTP y cuerpo)"
+    evidencia_bitacora: [0, 0]           # números 'n' de bitacora/ejecucion.jsonl que reproducen la falla
+    prueba: "tests/api/test_archivo.py::test_nombre"   # prueba automatizada que FALLA en la versión entregada
+    causa_raiz: "archivo.py::funcion — explicación técnica (tras el análisis)"
+    correccion: "Descripción del cambio aplicado en la rama correcciones"
+    estado: "Nuevo"                      # Nuevo | Confirmado | Corregido | Verificado

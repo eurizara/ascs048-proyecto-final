@@ -1,0 +1,2 @@
+metrica,formula,unidad,linea_base,valor_final,fuente_del_dato
+Cobertura de sentencias de labreserva/reglas.py,sentencias ejecutadas / sentencias totales x 100,%,,,"reporte coverage (commit ...)"
