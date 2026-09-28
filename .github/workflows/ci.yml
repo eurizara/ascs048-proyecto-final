@@ -1,6 +1,7 @@
 # Pipeline de integración continua del Proyecto Final ASCS-048.
 # No necesita configuración: lee su carné de qa/estudiante.yaml.
 # Resultado esperado: ROJO en main (sus pruebas detectan defectos) y VERDE en correcciones.
+# Cada paso que falla aparece en rojo; los pasos de pruebas se ejecutan igual para que vea todos los resultados.
 name: CI LabReserva
 
 on:
@@ -33,12 +34,14 @@ jobs:
           echo "CARNE=$CARNE" >> "$GITHUB_ENV"
 
       - name: Levantar la API
+        id: api
         run: |
           nohup uvicorn labreserva.main:app --port 8000 > api.log 2>&1 &
           for i in $(seq 1 30); do curl -sf "$SUT_URL/api/parametros" > /dev/null && break; sleep 1; done
           curl -sf "$SUT_URL/api/parametros" || { cat api.log; exit 1; }
 
       - name: Verificar huella
+        id: huella
         run: |
           ESPERADA=$(curl -s "$SUT_URL/api/parametros" | python -c "import sys, json; print(json.load(sys.stdin)['HUELLA'])")
           REGISTRADA=$(python -c "import re; m = re.search(r'^huella:\s*[\"\']?([0-9A-Fa-f]{8})', open('qa/estudiante.yaml', encoding='utf-8').read(), re.M); print(m.group(1).upper() if m else '')")
@@ -52,17 +55,17 @@ jobs:
 
       - name: Pruebas pytest con cobertura
         id: pytest
-        continue-on-error: true
+        if: ${{ !cancelled() && steps.huella.outcome == 'success' }}
         run: python -m pytest tests --cov=labreserva --cov-branch --cov-report=term-missing
 
       - name: Puerta de calidad - cobertura de labreserva/reglas.py >= 80 %
         id: cobertura
-        continue-on-error: true
+        if: ${{ !cancelled() && steps.pytest.outcome != 'skipped' }}
         run: coverage report --include="labreserva/reglas.py" --fail-under=80
 
       - name: Colección de API (Postman o Bruno)
         id: coleccion
-        continue-on-error: true
+        if: ${{ !cancelled() && steps.huella.outcome == 'success' }}
         run: |
           if [ -d api-collection/postman ]; then
             npx --yes newman run api-collection/postman/LabReserva.postman_collection.json \
@@ -72,8 +75,17 @@ jobs:
             cd api-collection/bruno && npx --yes @usebruno/cli run --env local --env-var "base_url=$SUT_URL"
           fi
 
-      - name: Resultado
+      - name: Resumen
         if: always()
         run: |
-          echo "pytest=${{ steps.pytest.outcome }} cobertura=${{ steps.cobertura.outcome }} coleccion=${{ steps.coleccion.outcome }}"
-          [ "${{ steps.pytest.outcome }}" = "success" ] && [ "${{ steps.cobertura.outcome }}" = "success" ] && [ "${{ steps.coleccion.outcome }}" = "success" ]
+          {
+            echo "### Resultado del pipeline"
+            echo ""
+            echo "| Paso | Resultado |"
+            echo "|---|---|"
+            echo "| Pruebas pytest | ${{ steps.pytest.outcome }} |"
+            echo "| Cobertura de reglas.py >= 80 % | ${{ steps.cobertura.outcome }} |"
+            echo "| Colección de API | ${{ steps.coleccion.outcome }} |"
+            echo ""
+            echo "En **main** se espera fallo (sus pruebas detectan defectos). En **correcciones** todo debe ser success."
+          } >> "$GITHUB_STEP_SUMMARY"

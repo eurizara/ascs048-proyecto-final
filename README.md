@@ -107,6 +107,7 @@ Para recibir nuevas aclaraciones, consulte `docs/aclaraciones.md` en este reposi
 
 | Síntoma | Solución |
 |---|---|
+| Mi primera ejecución en **Actions** falló (❌) en el paso "Leer carné" | Es normal: aún no ha llenado `qa/estudiante.yaml`. Escriba su carné y su huella, envíe el cambio y el pipeline avanzará. En `main` es esperado que termine en rojo mientras sus pruebas detecten defectos o la cobertura de `reglas.py` sea menor al 80 %: revise qué paso aparece en rojo. |
 | `failed to connect to the docker API` o `Cannot connect to the Docker daemon` | Abra Docker Desktop y espere a que termine de iniciar. |
 | Windows: Docker Desktop pide WSL o virtualización | Acepte la instalación de WSL 2 que ofrece el instalador y reinicie; si pide virtualización, actívela en la BIOS. |
 | Windows: `Activate.ps1 cannot be loaded because running scripts is disabled` | Ejecute una vez `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` y vuelva a activar el entorno. |
