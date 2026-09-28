@@ -1,0 +1,20 @@
+meta {
+  name: EJ03-parametros
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/api/parametros
+  body: none
+  auth: none
+}
+
+tests {
+  test("200 OK", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  test("incluye la huella de 8 caracteres", function() {
+    expect(res.getBody().HUELLA).to.have.lengthOf(8);
+  });
+}

@@ -1,0 +1,79 @@
+# Pipeline de integración continua del Proyecto Final ASCS-048.
+# No necesita configuración: lee su carné de qa/estudiante.yaml.
+# Resultado esperado: ROJO en main (sus pruebas detectan defectos) y VERDE en correcciones.
+name: CI LabReserva
+
+on:
+  push:
+    branches: [main, correcciones]
+  workflow_dispatch:
+
+jobs:
+  calidad:
+    runs-on: ubuntu-latest
+    env:
+      SUT_URL: http://localhost:8000
+    steps:
+      - name: Descargar el repositorio
+        uses: actions/checkout@v7
+
+      - name: Preparar Python 3.12
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Instalar dependencias
+        run: pip install -r requirements-dev.txt
+
+      - name: Leer carné de qa/estudiante.yaml
+        run: |
+          CARNE=$(python -c "import re; m = re.search(r'^carne:\s*[\"\']?([0-9-]+)', open('qa/estudiante.yaml', encoding='utf-8').read(), re.M); print(m.group(1) if m else '')")
+          echo "Carné: $CARNE"
+          python -m labreserva.config "$CARNE" > /dev/null || { echo "::error::Escriba su carné real en qa/estudiante.yaml"; exit 1; }
+          echo "CARNE=$CARNE" >> "$GITHUB_ENV"
+
+      - name: Levantar la API
+        run: |
+          nohup uvicorn labreserva.main:app --port 8000 > api.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf "$SUT_URL/api/parametros" > /dev/null && break; sleep 1; done
+          curl -sf "$SUT_URL/api/parametros" || { cat api.log; exit 1; }
+
+      - name: Verificar huella
+        run: |
+          ESPERADA=$(curl -s "$SUT_URL/api/parametros" | python -c "import sys, json; print(json.load(sys.stdin)['HUELLA'])")
+          REGISTRADA=$(python -c "import re; m = re.search(r'^huella:\s*[\"\']?([0-9A-Fa-f]{8})', open('qa/estudiante.yaml', encoding='utf-8').read(), re.M); print(m.group(1).upper() if m else '')")
+          echo "Huella del sistema: $ESPERADA | registrada: $REGISTRADA"
+          [ "$ESPERADA" = "$REGISTRADA" ] || { echo "::error::La huella de qa/estudiante.yaml no coincide"; exit 1; }
+
+      - name: Análisis estático (informativo)
+        run: |
+          ruff check labreserva tests || true
+          bandit -q -r labreserva || true
+
+      - name: Pruebas pytest con cobertura
+        id: pytest
+        continue-on-error: true
+        run: python -m pytest tests --cov=labreserva --cov-branch --cov-report=term-missing
+
+      - name: Puerta de calidad - cobertura de labreserva/reglas.py >= 80 %
+        id: cobertura
+        continue-on-error: true
+        run: coverage report --include="labreserva/reglas.py" --fail-under=80
+
+      - name: Colección de API (Postman o Bruno)
+        id: coleccion
+        continue-on-error: true
+        run: |
+          if [ -d api-collection/postman ]; then
+            npx --yes newman run api-collection/postman/LabReserva.postman_collection.json \
+              -e api-collection/postman/local.postman_environment.json --env-var "base_url=$SUT_URL"
+          fi
+          if [ -d api-collection/bruno ]; then
+            cd api-collection/bruno && npx --yes @usebruno/cli run --env local --env-var "base_url=$SUT_URL"
+          fi
+
+      - name: Resultado
+        if: always()
+        run: |
+          echo "pytest=${{ steps.pytest.outcome }} cobertura=${{ steps.cobertura.outcome }} coleccion=${{ steps.coleccion.outcome }}"
+          [ "${{ steps.pytest.outcome }}" = "success" ] && [ "${{ steps.cobertura.outcome }}" = "success" ] && [ "${{ steps.coleccion.outcome }}" = "success" ]

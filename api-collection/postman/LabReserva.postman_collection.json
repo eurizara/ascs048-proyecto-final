@@ -1,0 +1,170 @@
+{
+  "info": {
+    "name": "LabReserva",
+    "description": "Colección del Proyecto Final ASCS-048. Ejecute primero la carpeta 00 Preparación. EJ03 es un EJEMPLO y no cuenta para los mínimos.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "00 Preparación",
+      "item": [
+        {
+          "name": "Iniciar sesión ADMIN",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.collectionVariables.set('token_admin', pm.response.json().token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\": \"admin@labreserva.test\", \"password\": \"Admin2026!\"}"
+            },
+            "url": "{{base_url}}/api/auth/login"
+          }
+        },
+        {
+          "name": "Fijar reloj del sistema",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_admin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"ahora\": \"2026-10-05T08:00:00\"}"
+            },
+            "url": "{{base_url}}/api/soporte/reloj"
+          }
+        },
+        {
+          "name": "Restablecer datos semilla",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_admin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{base_url}}/api/soporte/reset"
+          }
+        },
+        {
+          "name": "Iniciar sesión ADMIN (después del reset)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.collectionVariables.set('token_admin', pm.response.json().token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\": \"admin@labreserva.test\", \"password\": \"Admin2026!\"}"
+            },
+            "url": "{{base_url}}/api/auth/login"
+          }
+        }
+      ]
+    },
+    {
+      "name": "01 Pruebas",
+      "item": [
+        {
+          "name": "EJ03 Parámetros del estudiante",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('incluye la huella de 8 caracteres', () => pm.expect(pm.response.json().HUELLA).to.have.lengthOf(8));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/parametros"
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "token_admin",
+      "value": ""
+    }
+  ]
+}

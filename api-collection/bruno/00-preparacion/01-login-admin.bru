@@ -1,0 +1,28 @@
+meta {
+  name: 01-login-admin
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{base_url}}/api/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "admin@labreserva.test",
+    "password": "Admin2026!"
+  }
+}
+
+script:post-response {
+  bru.setVar("token_admin", res.getBody().token);
+}
+
+tests {
+  test("200 OK", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+}

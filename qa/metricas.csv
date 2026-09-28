@@ -1,0 +1,6 @@
+﻿id,metrica,formula,unidad,linea_base_main,valor_final_correcciones,fuente,interpretacion
+M01,Cobertura combinada (sentencias y ramas) de labreserva/reglas.py,coverage.py con --branch sobre sus pruebas unitarias,%,,,,
+M02,Reglas de la ERS cubiertas por al menos una prueba,reglas con prueba / 31 x 100 (qa/trazabilidad.csv),%,,,,
+M03,Pruebas que pasan,pruebas que pasan / pruebas totales x 100 (pytest + colección),%,,,,
+M04,Defectos abiertos,defectos reportados - defectos corregidos y verificados,defectos,,,,
+M05,"Percentil 95 de GET /api/prestamos?size=50 con al menos 1,000 préstamos (RN-28)",p95 de al menos 10 mediciones,segundos,,,,

@@ -1,0 +1,12 @@
+.git
+.github
+.env
+data
+bitacora
+tests
+qa
+docs
+api-collection
+__pycache__
+.venv
+venv

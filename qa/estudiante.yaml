@@ -1,0 +1,7 @@
+# Complete este archivo en el Paso 1. El pipeline lo lee automáticamente.
+nombre: "ESCRIBA SU NOMBRE COMPLETO"
+carne: "ESCRIBA-SU-CARNE"          # exactamente como en Canvas, p. ej. 7690-14-9834
+huella: "XXXXXXXX"                 # la que muestra http://localhost:8000/api/parametros
+herramienta_api: "postman"         # postman | bruno (borre la carpeta de la otra en api-collection/)
+usuario_github: "su-usuario"
+repositorio: "https://github.com/su-usuario/ascs048-pf-su-carne"

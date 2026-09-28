@@ -1,0 +1,26 @@
+# Registro de defectos. Un elemento por defecto (mínimo 8). El ejemplo es ficticio: bórrelo.
+# severidad: Crítica (pérdida de datos, seguridad o bloqueo) | Alta (regla de negocio incumplida
+#            con impacto en dinero o acceso) | Media (regla incumplida sin impacto directo) | Baja (formato)
+# prioridad: P1 (corregir ya) | P2 | P3 | P4
+# caracteristica_iso25010: Adecuación funcional | Eficiencia de desempeño | Compatibilidad |
+#   Capacidad de interacción | Fiabilidad | Seguridad | Mantenibilidad | Flexibilidad | Protección
+defectos:
+  - id: DEF-00
+    titulo: "EJEMPLO FICTICIO: frase breve que describe la falla observada"
+    reglas: ["RN-00"]
+    severidad: "Media"
+    prioridad: "P3"
+    caracteristica_iso25010: "Adecuación funcional"
+    precondiciones: "Reloj fijado en 2026-10-05 08:00; datos semilla restablecidos"
+    pasos:
+      - "Iniciar sesión como ..."
+      - "Enviar ... a ..."
+    datos: "Valores exactos usados, calculados con SUS parámetros"
+    resultado_esperado: "Lo que exige la ERS (cite la regla y, si aplica, la aclaración ACL-xx)"
+    resultado_obtenido: "Código HTTP y cuerpo que respondió el sistema"
+    evidencia_bitacora: [0, 0]      # valores del campo "n" en bitacora/ejecucion.jsonl
+    prueba: "tests/api/test_archivo.py::test_CP000_descripcion"
+    rca: "qa/rca/DEF-00.md"         # solo si hizo análisis de causa raíz (mínimo 3 defectos)
+    causa_raiz: "archivo.py::funcion — explicación breve"
+    correccion: "Qué cambió en la rama correcciones y en qué commit"
+    estado: "Nuevo"                 # Nuevo | Confirmado | Corregido | Verificado

@@ -1,0 +1,21 @@
+meta {
+  name: 03-reset
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{base_url}}/api/soporte/reset
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token_admin}}
+}
+
+tests {
+  test("200 OK", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+}

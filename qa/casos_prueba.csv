@@ -1,0 +1,2 @@
+﻿id,reglas,tecnica,tipo_prueba,descripcion,precondiciones,datos_entrada,resultado_esperado,prueba_pytest,peticion_coleccion,resultado_main,resultado_correcciones
+EJ-01,RN-02,EP,API,EJEMPLO (borre esta fila): usuario SUSPENDIDO intenta iniciar sesión,Reloj 2026-10-05 08:00; semilla restablecida,ctoj@labreserva.test / Estudiante2026,403 USUARIO_INACTIVO,tests/api/test_ejemplo_api.py::test_EJ01_usuario_suspendido_no_inicia_sesion,NO,PASA,PASA
