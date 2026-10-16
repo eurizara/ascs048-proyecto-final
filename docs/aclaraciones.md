@@ -4,41 +4,16 @@ Este archivo forma parte de la ERS (`docs/ERS_LabReserva.md`) y tiene la misma a
 
 **Cómo consultar:** pregunte por el requisito (por ejemplo, «¿la regla RN-xx aplica también al rol DOCENTE?»), no por el comportamiento que observó. No publique en el grupo defectos, pruebas, código ni resultados: el proyecto es individual.
 
-**Cómo citarlas:** en sus casos de prueba y reportes, cite la regla y la aclaración, por ejemplo `RN-08 / ACL-01`.
+**Cómo citarlas:** en sus casos de prueba y reportes, cite la regla y la aclaración, por ejemplo `RN-04 / ACL-01`.
 
 | ID | Fecha | Regla | Consulta | Respuesta oficial |
 |---|---|---|---|---|
-| — | — | — | (sin aclaraciones publicadas todavía) | — |
-
-1. RN-04 (formato de correo). Primero se quitan los espacios al inicio y al final. Luego el correo es válido si cumple todo lo siguiente:
-
-Tiene exactamente una @.
-Tiene al menos un carácter antes de la @.
-No tiene espacios internos.
-Después de la @ hay un dominio con al menos un punto, y ese punto tiene al menos un carácter antes y después.
-
-El signo «+», los subdominios y los puntos consecutivos no están regulados por la ERS. Por lo tanto no son defecto y no deben probarse como requisito.
-
-2. RN-06 (horario). Dentro de RN-06 se verifica primero el horario de atención: mismo día, lunes a sábado, inicio ≥ 07:00 y fin ≤ 21:00. Después se verifica la regla de minutos 00/30. Un inicio a las 06:45 responde 400 FUERA_DE_HORARIO.
-
-3. RN-08 (anticipación). El límite se mide como 30 × 24 horas (720 h) desde el reloj del sistema, inclusive. Se acepta un inicio hasta exactamente 720 h después del reloj. Un inicio posterior se rechaza con ANTICIPACION_EXCESIVA, siempre que cumpla las validaciones previas del Anexo A.
-
-4. RN-23 (pagos). Las validaciones se aplican en este orden:
-
-Formato del cuerpo (400 VALIDACION).
-Rol ADMIN (403 SIN_PERMISO).
-Monto mayor que 0 y con máximo 2 decimales (400 MONTO_INVALIDO).
-El usuario existe (404 NO_ENCONTRADO).
-El monto no excede el saldo (409 MONTO_EXCEDE_SALDO).
-
-Así, un usuario inexistente responde 404 NO_ENCONTRADO. Un monto con más de 2 decimales que además excede el saldo responde 400 MONTO_INVALIDO.
-
-5. RN-24 (paginación). Los valores no se ajustan. Si page es menor que 1 o size está fuera del rango de 1 a 50, se responde 400 VALIDACION (RN-29).
-
-6. RN-26 (estadísticas).
-
-(a) Si desde es posterior a hasta, no es un error. El rango no contiene días, así que se responde 200 como un rango sin devoluciones: devueltos 0, a_tiempo 0, tasa_puntualidad 0.0 y multas_total en cero.
-(b) multas_total es la suma de las multas (RN-21) de los préstamos contados en devueltos, es decir, los devueltos dentro del rango. No incluye las penalidades por cancelación (RN-14).
-(c) El redondeo «mitad hacia arriba» de RN-21 aplica únicamente a multa_diaria. Para tasa_puntualidad, la ERS no especifica el criterio de desempate. Los valores que caen exactamente a la mitad (por ejemplo, 6.25) no se evalúan y no son defecto. Diseñe sus casos con valores que no generen empate.
-
-En sus casos de prueba y reportes, cite la regla junto con esta aclaración.
+| ACL-01 | 2026-10-15 | RN-04 | ¿Qué reglas definen el formato `usuario@dominio.ext`? | Tras quitar los espacios al inicio y al final, el correo es válido si tiene exactamente una @, al menos un carácter antes de ella, ningún espacio interno y, después de la @, un dominio con al menos un punto que tenga al menos un carácter antes y después. El signo «+», los subdominios y los puntos consecutivos no están regulados: no son defecto y no deben probarse como requisito. |
+| ACL-02 | 2026-10-15 | RN-06 | Si un inicio o un fin incumple a la vez el horario de atención y la regla de minutos 00/30, ¿qué error se informa? | Primero se verifica el horario de atención (mismo día, lunes a sábado, inicio ≥ 07:00 y fin ≤ 21:00) y después los minutos. Ejemplo: un inicio a las 06:45 responde 400 `FUERA_DE_HORARIO`. |
+| ACL-03 | 2026-10-15 | RN-08 | ¿El límite de 30 días se mide como 30 × 24 horas o como 30 días calendario? | Como 30 × 24 horas (720 h) desde el reloj del sistema, inclusive: se acepta un inicio hasta exactamente 720 h después del reloj; un inicio posterior se rechaza con `ANTICIPACION_EXCESIVA`, siempre que cumpla las validaciones previas del Anexo A. |
+| ACL-04 | 2026-10-15 | RN-23 | ¿Qué responde si el usuario no existe? Si el monto incumple a la vez el formato y el saldo, ¿qué error prevalece? | Orden de verificación: 1) formato del cuerpo (400 `VALIDACION`) → 2) rol ADMIN (403 `SIN_PERMISO`) → 3) monto mayor que 0 y con máximo 2 decimales (400 `MONTO_INVALIDO`) → 4) usuario existe (404 `NO_ENCONTRADO`) → 5) monto no excede el saldo (409 `MONTO_EXCEDE_SALDO`). Un usuario inexistente responde 404 `NO_ENCONTRADO`; un monto con más de 2 decimales que además excede el saldo responde 400 `MONTO_INVALIDO`. |
+| ACL-05 | 2026-10-15 | RN-24 | Si `page` es menor que 1 o `size` está fuera de 1 a 50, ¿se responde error o se ajusta el valor? | Los valores no se ajustan: responde 400 `VALIDACION` (RN-29). |
+| ACL-06 | 2026-10-15 | RN-26 | (a) `desde` posterior a `hasta`; (b) alcance de `multas_total`; (c) redondeo de `tasa_puntualidad` | (a) No es error: el rango no contiene días y responde 200 como un rango sin devoluciones (`devueltos` 0, `a_tiempo` 0, `tasa_puntualidad` 0.0 y `multas_total` en cero). (b) `multas_total` es la suma de las multas (RN-21) de los préstamos contados en `devueltos`; no incluye las penalidades por cancelación (RN-14). (c) El redondeo «mitad hacia arriba» de RN-21 aplica solo a `multa_diaria`; para `tasa_puntualidad` no se especifica el criterio de desempate: los valores que caen exactamente a la mitad (por ejemplo, 6.25) no se evalúan y no son defecto. |
+| ACL-07 | 2026-10-15 | RN-26 | ¿Cuenta como `a_tiempo` una devolución hecha el mismo día del vencimiento pero después de las 21:00? | No. `a_tiempo` exige una devolución anterior o igual al instante de vencimiento (21:00, RN-19). Ese caso no es puntual para RN-26, aunque para RN-21 tiene 0 días de atraso y multa 0.00: RN-21 cuenta días calendario y RN-26 compara instantes. |
+| ACL-08 | 2026-10-15 | RN-06 | ¿Una reserva en domingo responde `FUERA_DE_HORARIO`? | Sí: 400 `FUERA_DE_HORARIO`. El horario de atención comprende el día (lunes a sábado), el rango de 07:00 a 21:00 y que la reserva inicie y termine el mismo día; se verifica antes que la regla de minutos (ACL-02). |
+| ACL-09 | 2026-10-15 | RN-04 | Si un campo del cuerpo viene ausente o con el tipo equivocado, ¿se responde el error específico del campo o `VALIDACION`? | 400 `VALIDACION` (RN-29), que se verifica antes de las reglas de RN-04. Los errores `NOMBRE_INVALIDO`, `EMAIL_INVALIDO`, `PASSWORD_DEBIL` y `ROL_INVALIDO` aplican cuando el campo viene presente como texto e incumple su regla. Ejemplo: `nombre` ausente o numérico responde `VALIDACION`; `nombre` con valor «Al» responde `NOMBRE_INVALIDO`. |
